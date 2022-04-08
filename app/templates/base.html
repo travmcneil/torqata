@@ -17,12 +17,12 @@
         <a class="navbar-brand" href="#">Torqata</a>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="{{url_for('index')}}">Home</a>
+            <a class="nav-item nav-link active" href="{{url_for('main.index')}}">Home</a>
             {% if current_user.is_anonymous %}
-            <a class="nav-item nav-link" href="{{url_for('login')}}">Login</a>
+            <a class="nav-item nav-link" href="{{url_for('auth.login')}}">Login</a>
             {% else %}
-            <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
-            <a class="nav-item nav-link" href="{{ url_for('new_movie') }}">New Movie</a>
+            <a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+            <a class="nav-item nav-link" href="{{ url_for('main.new_movie') }}">New Movie</a>
             {% endif %}
           </div>
         </div>
