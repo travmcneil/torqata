@@ -1,0 +1,40 @@
+<div class="spinner_wrapper">
+    <div class="spinner">
+    </div>
+</div>
+
+
+    <table id="movies_table" class="table" style="opacity: .2;">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Show Id</th>
+            <th scope="col">Type</th>
+            <th scope="col">Title</th>
+            <th scope="col">Director</th>
+            <th scope="col">Cast</th>
+            <th scope="col">Country</th>
+            <th scope="col">Date Added</th>
+            <th scope="col">Release Year</th>
+            <th scope="col">Rating</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Listed In</th>
+            <th scope="col">Description</th>
+        </tr>
+        </thead>
+        {% for movie in movies %}
+            <tr>
+                <td scope="row">{{ movie.show_id }}</td>
+                <td>{{ movie.type }}</td>
+                <td>{{ movie.title }}</td>
+                <td>{{ movie.director }}</td>
+                <td>{{ movie.cast }}</td>
+                <td>{{ movie.country }}</td>
+                <td>{{ movie.date_added.strftime('%Y-%m-%d') }}</td>
+                <td>{{ movie.release_year.strftime('%Y') }}</td>
+                <td>{{ movie.rating }}</td>
+                <td>{{ movie.duration }}</td>
+                <td>{{ movie.listed_in }}</td>
+                <td>{{ movie.description }}</td>
+            </tr>
+        {% endfor %}
+    </table>

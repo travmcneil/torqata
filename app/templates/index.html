@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Hello {{ current_user.username }}</h1>
+
+    <hr>
+    {% include "_movies.html" %}
+    <!-- <form method="POST" action="" enctype="multipart/form-data">
+        <p><input type="file" name="file"></p>
+        <p><input type="submit" name="submit_button" value="add_csv"></p>
+      </form> -->
+{% endblock %}

@@ -1,0 +1,7 @@
+*.db
+
+*config.py
+
+.python-version
+
+.log
