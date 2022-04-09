@@ -6,7 +6,7 @@ from flask_sqlalchemy import Pagination
 import pandas as pd
 from os.path import join, dirname, realpath
 from werkzeug.urls import url_parse
-from flask import flash, redirect, render_template, request, url_for
+from flask import flash, redirect, render_template, request, url_for, current_app
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import desc, asc
 from app import db
@@ -48,37 +48,51 @@ def parseCSV(filePath):
             db.session.rollback()
             flash("Failed to upload movies")
 
-@bp.route('/', methods=['GET', 'POST'])
-@bp.route('/index', methods=['GET', 'POST'])
+@bp.route('/', methods=['GET'])
+@bp.route('/index', methods=['GET'])
 @login_required
 def index():
-    if request.method == 'POST':
-        if request.form['submit_button'] == 'add_csv':
-            # get the uploaded file
-            uploaded_file = request.files['file']
-            if uploaded_file.filename != '':
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
-                uploaded_file.save(file_path)
-                flash("new csv uploaded")
-                parseCSV(file_path)
-                return redirect(url_for('main.index'))
     if request.method == 'GET':
         movies = Movies.query.all()
-        return render_template('index.html', title='Home', movies=movies)        
+        if not movies:
+            parseCSV('app/static/uploads/netflix_titles.csv')
+        return render_template('index.html', title='Home', movies=movies)  
+
+
+@bp.route('/uplad_movie', methods=['GET', 'POST'])
+@login_required
+def upload_movie():
+    if request.method == 'POST':
+        if request.form['submit_button'] == 'add_csv':
+            flash("posted")
+            # get the uploaded file
+            # uploaded_file = request.files['file']
+            # if uploaded_file.filename != '':
+            #     file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+            #     uploaded_file.save(file_path)
+            #     flash("new csv uploaded")
+            #     parseCSV(file_path)
+            #     return redirect(url_for('main.index'))
+    if request.method == 'GET':
+        return render_template('upload_movie.html', title='Upload Movies') 
 
 @bp.route('/new_movie', methods=['GET', 'POST'])
 def new_movie():
     if current_user.is_authenticated:     
         form = NewMovieForm()
         last_movie = Movies.query.order_by(desc(Movies.id)).first()
-        show_id = last_movie.show_id
-        show_id = show_id[1:]
-        show_id = int(show_id)+1
-        show_id = 's' + str(show_id)
+        if last_movie:
+            show_id = last_movie.show_id
+            show_id = show_id[1:]
+            show_id = int(show_id)+1
+            show_id = 's' + str(show_id)
+        else:
+            show_id = 's1'
+
         release_year = pd.to_datetime(form.release_year.data)
-        
+        date_added = pd.to_datetime(form.date_added.data)
         if form.validate_on_submit(): 
-            movie = Movies(show_id=show_id, title=form.title.data, type=form.type.data, date_added=form.date_added,
+            movie = Movies(show_id=show_id, title=form.title.data, type=form.type.data, date_added=date_added,
                             director=form.director.data, cast=form.cast.data, country=form.country.data,
                             release_year=form.release_year.data, rating=form.rating.data, duration=form.duration.data,
                             listed_in=form.listed_in.data, description=form.description.data)

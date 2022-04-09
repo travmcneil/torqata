@@ -12,7 +12,7 @@ from flask_bootstrap import Bootstrap5
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
-login.login_view = 'login'
+login.login_view = 'auth.login'
 bootstrap = Bootstrap5()
 
 def create_app(config_class=Config):

@@ -1,19 +1,25 @@
-FROM python:3.7-alpine
+FROM python:slim
 
-RUN adduser -D torqata
+RUN useradd torqata
 
 WORKDIR /home/torqata
 
 COPY requirements.txt requirements.txt
 RUN python -m venv venv
 RUN venv/bin/pip install -r requirements.txt
-RUN apk add gcc linux-headers musl-dev
-RUN pip install pandas
+RUN venv/bin/pip install gunicorn pymysql cryptography
 
 COPY app app
 COPY migrations migrations
 COPY torqata.py config.py boot.sh ./
 RUN chmod a+x boot.sh
+RUN apt update
+RUN apt-get install python-tk -y
+# RUN apt install gcc -y
+# RUN apt install linux-headers -y
+# RUN apt install musl-dev -y
+RUN venv/bin/pip install tk
+RUN venv/bin/pip install pandas
 
 ENV FLASK_APP torqata.py
 
@@ -21,4 +27,4 @@ RUN chown -R torqata:torqata ./
 USER torqata
 
 EXPOSE 5000
-ENTRYPOINT ['./boot.sh']
+ENTRYPOINT ["./boot.sh"]
