@@ -12,6 +12,7 @@ RUN venv/bin/pip install gunicorn pymysql cryptography
 COPY app app
 COPY migrations migrations
 COPY torqata.py config.py boot.sh ./
+COPY app.db app.db
 RUN chmod a+x boot.sh
 RUN apt update
 RUN apt-get install python-tk -y

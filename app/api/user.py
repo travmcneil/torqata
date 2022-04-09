@@ -2,14 +2,16 @@ from flask import jsonify, request, url_for, abort
 from app import db
 from app.models import User, Movies
 from app.api import bp
-from app.api.auth import token_auth
+from app.api.auth import token_auth, basic_auth, token_auth_error
 from app.api.errors import bad_request
 
 
 @bp.route('/users/<int:id>', methods=['GET'])
 @token_auth.login_required
 def get_user(id):
-    return jsonify(User.query.get_or_404(id).to_dict())
+    user = User.query.get(id)
+    print(user.id)
+    return jsonify(user.to_dict())
 
 
 @bp.route('/users', methods=['GET'])
@@ -45,7 +47,7 @@ def create_user():
 def update_user(id):
     if token_auth.current_user().id != id:
         abort(403)
-    user = User.query.get_or_404(id)
+    user = User.query.get(id)
     data = request.get_json() or {}
     if 'username' in data and data['username'] != user.username and \
             User.query.filter_by(username=data['username']).first():
@@ -60,7 +62,7 @@ def update_user(id):
 @bp.route('/movies/<int:id>', methods=['GET'])
 @token_auth.login_required
 def get_movie(id):
-    return jsonify(Movies.query.get_or_404(id).to_dict())
+    return jsonify(Movies.query.get(id).to_dict())
 
 @bp.route('/movies', methods=['GET'])
 @token_auth.login_required
@@ -71,6 +73,7 @@ def get_movies():
     return jsonify(data)
 
 @bp.route('/movies', methods=['POST'])
+@token_auth.login_required
 def create_movie():
     data = request.get_json() or {}
     movie = Movies()
@@ -87,7 +90,7 @@ def create_movie():
 def update_movie(id):
     if token_auth.current_user().id != id:
         abort(403)
-    movie = Movies.query.get_or_404(id)
+    movie = Movies.query.get(id)
     data = request.get_json() or {}
     movie.from_dict(data, new_movie=False)
     db.session.commit()
