@@ -11,4 +11,4 @@ while true; do
 done
 export FLASK_DEBUG=1
 flask translate compile
-exec gunicorn -b :5000 --access-logfile - --error-logfile - torqata:app
+exec gunicorn -b :8080 --access-logfile - --error-logfile - torqata:app

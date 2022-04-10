@@ -27,5 +27,5 @@ ENV FLASK_APP torqata.py
 RUN chown -R torqata:torqata ./
 USER torqata
 
-EXPOSE 5000
+EXPOSE 8080
 ENTRYPOINT ["./boot.sh"]
