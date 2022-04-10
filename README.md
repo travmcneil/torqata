@@ -1,4 +1,4 @@
-This is a simple tech review application to search and add movies to a database
+This is a simple tech review application to search and add movies to a database.
 
 gcloud builds submit --tag gcr.io// --project=
 
